@@ -148,9 +148,9 @@ RSpec.describe "Memes", type: :request do
       meme = Meme.first()
       delete "/memes/#{meme.id}"
       
-      if response.status == 200
-        expect(response.status).to eq(200)
-      end
+      response.status == 200
+      expect(response.status).to eq(200)
+      
       
     end
   end
