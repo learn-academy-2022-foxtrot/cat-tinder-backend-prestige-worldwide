@@ -48,23 +48,17 @@ RSpec.describe "Memes", type: :request do
           likes: 1238,
           dislikes: 12,
           image: 'https://somerandommemes.com/meme/id=29183.jpg',
-          description: 'super cool meme'
+          description: ''
         }
       }
-      post '/memes', params: meme_params
-      p 'STATUS HERE', response.status
 
-      if response.status == 422
-        expect(response.status).to eq(422)
-        json = JSON.parse(response.body)
-        expect(json['description']).to include 'cannot be blank'
-      end
-      
-      if response.status == 200
-        expect(response.status).to eq(200)
-      end
+      post '/memes', params: meme_params
+      response.status == 422
+      expect(response.status).to eq(422)
+      json = JSON.parse(response.body)
+      expect(json['description']).to include "can't be blank"
+
     end
-    
   end
 
   describe "PATCH /update" do
@@ -95,6 +89,7 @@ RSpec.describe "Memes", type: :request do
       patch "/memes/#{meme.id}", params: meme_params
       find_meme = Meme.find(meme.id)
       expect(find_meme.title).to eq("calm dog in flaming house")
+
     end
     
     it 'meme update is missing an image to update' do
@@ -123,12 +118,11 @@ RSpec.describe "Memes", type: :request do
       
       patch "/memes/#{meme.id}", params: meme_params
       find_meme = Meme.find(meme.id)
-      
       json = JSON.parse(response.body)
       expect(response.status).to eq(422)
       expect(json['image']).to include "can't be blank"
-    end
     
+    end
   end
   
   describe 'DELETE /destroy' do
@@ -147,10 +141,8 @@ RSpec.describe "Memes", type: :request do
       post '/memes', params: meme_params
       meme = Meme.first()
       delete "/memes/#{meme.id}"
-      
       response.status == 200
       expect(response.status).to eq(200)
-      
       
     end
   end
