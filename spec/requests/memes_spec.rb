@@ -97,7 +97,7 @@ RSpec.describe "Memes", type: :request do
       expect(find_meme.title).to eq("calm dog in flaming house")
     end
     
-    it 'meme post is missing requirements to update' do
+    it 'meme update is missing an image to update' do
       meme_params = {
         meme: {
           title: 'burning house everything is fine dog',
@@ -109,7 +109,6 @@ RSpec.describe "Memes", type: :request do
       }
       
       post '/memes', params: meme_params
-      p 'STATUS HERE', response.status
       meme = Meme.first()
       
       meme_params = {
@@ -123,21 +122,11 @@ RSpec.describe "Memes", type: :request do
       }
       
       patch "/memes/#{meme.id}", params: meme_params
-      p 'STATUS HERE', response.status
       find_meme = Meme.find(meme.id)
-      p 'FIND MEME', find_meme
       
-      if response.status == 422
-        expect(response.status).to eq(422)
-        json = JSON.parse(response.body)
-        expect(json['image']).to include 'cannot be blank'
-      end
-      
-      if response.status == 200
-        expect(response.status).to eq(200)
-      end
-      
-      
+      json = JSON.parse(response.body)
+      expect(response.status).to eq(422)
+      expect(json['image']).to include "can't be blank"
     end
     
   end
